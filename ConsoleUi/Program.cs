@@ -14,8 +14,16 @@ namespace ConsoleUi
         //Open Close Principle
         static void Main(string[] args)
         {
-            //ProductManagerTest();
+            //Data Transformation Objects
+            ProductManagerTest();
+            //IoC
+            //CategoryTest();
 
+
+        }
+
+        private static void CategoryTest()
+        {
             CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
             foreach (var category in categoryManager.GetAll())
             {
@@ -26,6 +34,12 @@ namespace ConsoleUi
         private static void ProductManagerTest()
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
+
+            foreach (var product in productManager.GetProductDetails())
+            {
+                Console.WriteLine(product.ProductName + " / " + product.CategoryName);
+            }
+            Console.WriteLine("*******************************************");
             foreach (var product in productManager.GetAll())
             {
                 Console.WriteLine(product.ProductName);
