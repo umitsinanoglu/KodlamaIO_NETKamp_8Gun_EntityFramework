@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -13,25 +15,35 @@ namespace Business.Concrete
         {
             _productDal = productDal;
         }
-        public List<Product> GetAll()
+        public IDataResult<List<Product>> GetAll()
         {
-            return _productDal.GetAll();
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), true, Messages.ProductsListed);
+
         }
-        public List<Product> GetAllByCategoryId(int id)
+        public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             return _productDal.GetAll(p => p.CategoryId == id);
         }
-        public Product GetByCategoryId(int id)
+        public IDataResult<Product> GetByCategoryId(int id)
         {
             return _productDal.Get(p => p.CategoryId == id);
         }
-        public List<Product> GetAllByUnitPriceRange(decimal min, decimal max)
+        public IDataResult<List<Product>> GetAllByUnitPriceRange(decimal min, decimal max)
         {
             return _productDal.GetAll(p=>p.UnitPrice >= min && p.UnitPrice <= max);
         }
-        public List<ProductDetailDto> GetProductDetails()
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             return _productDal.GetProductDetails();
+        }
+
+        public IResult Add(Product product)
+        {
+            if (product.ProductName.Length < 2) {
+                return new ErrorResult(Messages.ProductNameInvalid);
+            }
+            _productDal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);
         }
     }
 }

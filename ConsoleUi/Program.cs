@@ -18,17 +18,6 @@ namespace ConsoleUi
             ProductManagerTest();
             //IoC
             //CategoryTest();
-
-
-        }
-
-        private static void CategoryTest()
-        {
-            CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
-            foreach (var category in categoryManager.GetAll())
-            {
-                Console.WriteLine(category.CategoryName);
-            }
         }
 
         private static void ProductManagerTest()
@@ -55,6 +44,15 @@ namespace ConsoleUi
             foreach (var product in productManager.GetAllByUnitPriceRange(9000, 29000))
             {
                 Console.WriteLine(product.ProductName + "-" + product.UnitPrice);
+            }
+        }
+
+        private static void CategoryTest()
+        {
+            CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+            foreach (var category in categoryManager.GetAll())
+            {
+                Console.WriteLine(category.CategoryName);
             }
         }
     }
