@@ -24,27 +24,19 @@ namespace ConsoleUi
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
 
-            foreach (var product in productManager.GetProductDetails())
+            var result = productManager.GetProductDetails();
+            if (result.IsSuccess == true)
             {
-                Console.WriteLine(product.ProductName + " / " + product.CategoryName);
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductName + " / " + product.CategoryName);
+                }
             }
-            Console.WriteLine("*******************************************");
-            foreach (var product in productManager.GetAll())
+            else
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(result.Message);
             }
-            Console.WriteLine("*******************************************");
-            foreach (var product in productManager.GetAllByCategoryId(2))
-            {
-                Console.WriteLine(product.ProductName);
-            }
-            Console.WriteLine("*******************************************");
-            Console.WriteLine(productManager.GetByCategoryId(3).ProductName);
-            Console.WriteLine("*******************************************");
-            foreach (var product in productManager.GetAllByUnitPriceRange(9000, 29000))
-            {
-                Console.WriteLine(product.ProductName + "-" + product.UnitPrice);
-            }
+
         }
 
         private static void CategoryTest()

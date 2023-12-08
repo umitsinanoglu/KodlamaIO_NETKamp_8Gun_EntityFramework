@@ -17,33 +17,81 @@ namespace Business.Concrete
         }
         public IDataResult<List<Product>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), true, Messages.ProductsListed);
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            }
+
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
 
         }
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return _productDal.GetAll(p => p.CategoryId == id);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id), Messages.ProductsListed);
         }
+
+        public IDataResult<Product> GetById(int id)
+        {
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == id), Messages.ProductsListed);
+        }
+
         public IDataResult<Product> GetByCategoryId(int id)
         {
-            return _productDal.Get(p => p.CategoryId == id);
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.CategoryId == id), Messages.ProductsListed);
         }
         public IDataResult<List<Product>> GetAllByUnitPriceRange(decimal min, decimal max)
         {
-            return _productDal.GetAll(p=>p.UnitPrice >= min && p.UnitPrice <= max);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max), Messages.ProductsListed);
         }
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return _productDal.GetProductDetails();
+            return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductsListed);
         }
 
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length < 2) {
+            if (product.ProductName.Length < 2)
+            {
                 return new ErrorResult(Messages.ProductNameInvalid);
             }
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
+
+        public IResult Update(Product product)
+        {
+            _productDal.Update(product);
+            return new SuccessResult(Messages.ProductUpdated);
+
+        }
+
+        public IResult DeleteByCategoryId(int categoryId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult Delete(Product product)
+        {
+            _productDal.Delete(product);
+            return new SuccessResult(Messages.ProductDeleted);
+        }
+
+        public IResult DeleteById(int productId)
+        {
+            DataResult<Product> productToDeleteDataResult = (DataResult<Product>)GetById(productId);
+
+            if (productToDeleteDataResult.IsSuccess)
+            {
+                Product productToDelete = productToDeleteDataResult.Data;
+                _productDal.Delete(productToDelete);
+                return new SuccessResult(Messages.ProductDeleted);
+            }
+            else
+            {
+                return new ErrorResult(productToDeleteDataResult.Message);
+            }
+        }
+
+
     }
 }
