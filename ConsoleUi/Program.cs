@@ -36,6 +36,8 @@ namespace ConsoleUi
             {
                 Console.WriteLine(result.Message);
             }
+            Console.WriteLine("*******************************************");
+            productManager.DeleteById(78);
 
         }
 

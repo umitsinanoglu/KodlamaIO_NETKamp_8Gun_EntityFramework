@@ -82,7 +82,7 @@ namespace Business.Concrete
 
         public IResult DeleteById(int productId)
         {
-            var productToDeleteDataResult = GetById(productId);
+            var productToDeleteDataResult = new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
 
             if (productToDeleteDataResult.IsSuccess)
             {
