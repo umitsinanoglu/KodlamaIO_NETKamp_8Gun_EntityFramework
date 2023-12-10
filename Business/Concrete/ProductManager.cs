@@ -17,7 +17,7 @@ namespace Business.Concrete
         }
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
+            if (DateTime.Now.Hour == 21)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
@@ -45,6 +45,10 @@ namespace Business.Concrete
         }
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
+            if (DateTime.Now.Hour == 21)
+            {
+                return new ErrorDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.MaintenanceTime);
+            }
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductsListed);
         }
 
@@ -78,7 +82,7 @@ namespace Business.Concrete
 
         public IResult DeleteById(int productId)
         {
-            DataResult<Product> productToDeleteDataResult = (DataResult<Product>)GetById(productId);
+            var productToDeleteDataResult = GetById(productId);
 
             if (productToDeleteDataResult.IsSuccess)
             {
@@ -88,7 +92,7 @@ namespace Business.Concrete
             }
             else
             {
-                return new ErrorResult(productToDeleteDataResult.Message);
+                return new ErrorResult(Messages.ProductIdInvalid);
             }
         }
 
